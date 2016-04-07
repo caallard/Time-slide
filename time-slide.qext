@@ -5,7 +5,7 @@
 	"type" : "visualization",
 	"version": "1.0",
 	"author" : "caallard",
-	"license" : "https://github.com/caallard/time-slide/Licence",
-	"repository" : "",
+	"license" : "https://github.com/caallard/Time-slide/blob/master/Licence",
+	"repository" : "https://github.com/caallard/Time-slide",
     "dependencies" : { "qlik-sense" : ">=2.2.x" }
 }
