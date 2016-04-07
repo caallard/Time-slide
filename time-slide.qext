@@ -1,0 +1,11 @@
+{
+	"name" : "Time Slide",
+	"description" : "Animate your Qlik Sense report, changing a dimension with a slider",
+	"icon" : "list",
+	"type" : "visualization",
+	"version": "1.0",
+	"author" : "caallard",
+	"license" : "https://github.com/caallard/time-slide/Licence",
+	"repository" : "",
+    "dependencies" : { "qlik-sense" : ">=2.2.x" }
+}
