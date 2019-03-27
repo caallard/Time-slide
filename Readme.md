@@ -16,10 +16,13 @@ Qlik Sense Server
 Usage :
 =======
 Add Extension to the Qlik Sense App
+
 ![Alt text](/img/img1.png?raw=true "Add Extension to the Qlik Sense App")
 
 Add a dimension
+
 ![Alt text](/img/img2.png?raw=true "Add a dimension")
 
 Configure the extension
+
 ![Alt text](/img/img2.png?raw=true "Configure the extension")
