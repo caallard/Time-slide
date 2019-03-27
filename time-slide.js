@@ -1,3 +1,10 @@
+/*
+ * @license    Waterfall : Copyright (c) 2019, Charles-Alban Allard All rights reserved.
+ * @release    2.0
+ * @details    https://github.com/caallard/Time-slide
+
+
+*/
 define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 	$("<style>").html(cssContent).appendTo("head");
 	return {
@@ -25,44 +32,6 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 			type : "items",
 			component : "accordion",
 			items : {
-				width : {
-					type : "items",
-					label : "Width and Selections",
-					items : {
-						fixed : {
-							ref : "fixed",
-							label : "Fixed width",
-							type : "boolean",
-							defaultValue : true
-						},
-						width : {
-							ref : "width",
-							label : "Width",
-							type : "number",
-							defaultValue : 25,
-							show : function(data) {
-								return data.fixed;
-							}
-						},
-						percent : {
-							ref : "percent",
-							type : "boolean",
-							label : "Unit",
-							component : "switch",
-							defaultValue : true,
-							options : [{
-								value : true,
-								label : "Percent"
-							}, {
-								value : false,
-								label : "Pixels"
-							}],
-							show : function(data) {
-								return data.fixed;
-							}
-						}
-					}
-				},
 				dimension : {
 					type : "items",
 					label : "Dimensions",
@@ -130,25 +99,7 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 								label : "Descending"
 							}],
 							defaultValue : 0,							
-						}/*,
-						qSortByLoadOrder:{
-							type: "numeric",
-							component : "dropdown",
-							label : "Sort by Load Order",
-							ref : "qListObjectDef.qDef.qSortCriterias.0.qSortByLoadOrder",
-							options : [{
-								value : 1,
-								label : "Ascending"
-							}, {
-								value : 0,
-								label : "No"
-							}, {
-								value : -1,
-								label : "Descending"
-							}],
-							defaultValue : 0,
-							
-						}*/
+						}
 					}
 				},
 				settings : {
@@ -160,8 +111,8 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 							items: {
 								timeout : {
 									type : "integer",
-									ref : "myproperties.timeout",
-									label : "Time between selection",
+									ref : "config.timeout",
+									label : "Time between selection (ms)",
 									show : true,
 									defaultValue : 2000,
 									min : 100,
@@ -171,7 +122,7 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 									type: "boolean",
 									component: "switch",
 									label: "Show play buttons",
-									ref: "myproperties.showButtons",
+									ref: "config.showButtons",
 									options: [{
 										value: true,
 										label: "On"
@@ -185,7 +136,7 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 									type: "boolean",
 									component: "switch",
 									label: "Show selected value",
-									ref: "myproperties.showValue",
+									ref: "config.showValue",
 									options: [{
 										value: true,
 										label: "On"
@@ -199,7 +150,7 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 									type: "boolean",
 									component: "switch",
 									label: "Loop playing",
-									ref: "myproperties.loop",
+									ref: "config.loop",
 									options: [{
 										value: true,
 										label: "On"
@@ -213,7 +164,7 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 									type: "boolean",
 									component: "switch",
 									label: "Auto start animation",
-									ref: "myproperties.autoStart",
+									ref: "config.autoStart",
 									options: [{
 										value: true,
 										label: "On"
@@ -233,72 +184,42 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 			canTakeSnapshot : true
 		},
 		paint : function($element, layout) {
-			//var self = this, html = "<ul>", style;
-			var self = this, html = "", style;
+			var id=layout.qInfo.qId;
+			var self = this;
+			var html = '<div id="'+id+'" class="qv-object-Time-slide" >';
 			var selected=0;
 			var selected_text=0;
 			var timeoutID;
-			/*var appid=layout.qInfo.qId;
-			//var window['PluginData'];
-			window.PluginData[appid] = 0;*/
-			
-			
-			
-			
-			//window.clearTimeout(timeoutID);
-			if(layout.fixed) {
-				style = 'style="width:' + layout.width + (layout.percent ? '%' : 'px') + ';"';
-			} else {
-				style = '';
-			}
-				//console.log( 'Hypercube: ', layout.qHyperCube );
-				//console.log( 'Backend: ', this.backendApi );
-				console.dir(layout);
-			//console.log( 'qid: ', layout.qInfo.qId );
-			//objs.sort(compare);
-			//console.log( 'Backend: ', layout.qListObject.qDataPages[0].qMatrix );
-			//layout.qListObject.qDataPages[0].qMatrix.sort(compare);
-			/*layout.qListObject.qDataPages[0].qMatrix.sort(function (a,b) {
-			  if (a[0].qElemNumber < b[0].qElemNumber)
-				return -1;
-			  if (a[0].qElemNumber > b[0].qElemNumber)
-				return 1;
-			  return 0;
-			});*/
-			//console.log( 'Backend: ', layout.qListObject.qDataPages[0].qMatrix );
+
 			this.backendApi.eachDataRow(function(rownum, row) {
-				//html += '<li ' + style + ' class="data state' + row[0].qState + '" data-value="' + row[0].qElemNumber + '">' + row[0].qText;
-				//html += '</li>';
 				if (row[0].qState=='S'){
 					selected=row[0].qElemNumber;
 					selected_text=row[0].qText;
 				}
 			});
 			html += "</ul>";
-			$element.html(html);
 			
-			if(layout.myproperties.showButtons){
-				html += '<button value="start"><img src="/extensions/time-slide/start.png" width="20px"/></button>';
-				html += '<button value="stop"><img src="/extensions/time-slide/stop.png" width="20px"/></button>';
+			//$element.html(html);
+			
+			if(layout.config.showButtons){
+				html += '<button value="start"><img src="/extensions/time-slide/start2.png" width="20px"/></button>';
+				html += '<button value="stop"><img src="/extensions/time-slide/stop2.png" width="20px"/></button>';
 			}
 
 			
-			if(layout.myproperties.showValue){
-				html += '<div style="display:Block; float: right">'+selected_text+'</div>';
+			if(layout.config.showValue){
+				html += '<div class="value" style="display:Block; float: right">'+selected_text+'</div>';
 			}
 			
 			//bug à corriger: -1 sur height//OK
 			html += '<input type="range" min="' + 0 + '" max="' + (layout.qListObject.qDataPages[0].qArea.qHeight-1) + '" step="' + 1 + '" style="width:98%" value="'+selected+'"/>';
-			
-			//html += '<div class="status" style="display:none"/>';
 
-			//console.log( 'getDimensionInfos: ', this.backendApi.getDimensionInfos() );
-			//console.log( 'qGroupFieldDefs: ', this.backendApi.getDimensionInfos().qGroupFieldDefs() );
+			html += "</div>";
 			$element.html(html);
 			
 			var pluginDiv=$element.find('input')[0].parentNode;
 			
-			if(layout.myproperties.autoStart && pluginDiv.getAttribute("data-state")!="Stopped"){
+			if(layout.config.autoStart && pluginDiv.getAttribute("data-state")!="Stopped"){
 				pluginDiv.setAttribute("data-state","Started");
 			}
 			
@@ -307,14 +228,6 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 			}
 			
 			console.log( 'timeout: ',pluginDiv.getAttribute("data-timeout"));
-			
-			/*console.log( 'angular: ', angular );
-			console.log( 'this: ', this );
-			console.log( 'getViewState: ', this.getViewState());
-			var self = this;
-			console.log( 'self: ', self );
-			console.log( 'self-inEditState: ',self.inEditState() );
-			console.log( 'this-inEditState: ',this.inEditState() );*/
 			
 			$element.find('input').on('change', function() {
 				var val = $(this).val() + '';
@@ -330,14 +243,10 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 			
 			function sendSelected(){
 				if(pluginDiv.getAttribute("data-state")=="Started"){
-						//console.log('Started');
 						if(selected<(layout.qListObject.qDataPages[0].qArea.qHeight-1)){
-							//console.log('Startedrun');
-							//console.log( 'range before: ', selected );
 							var value = parseInt(selected+1, 10), dim = 0;
 							pluginDiv.setAttribute("data-timeout","Unset");
 							self.backendApi.selectValues(dim, [value], false);
-							//console.log( 'range after: ', value );
 						}
 					}
 				
@@ -352,15 +261,10 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 				
 			}
 			
-			if(layout.myproperties.showButtons){
+			if(layout.config.showButtons){
 				$element.find('button').on('click', function() {
 					if(this.getAttribute("value")=="start"){
-						//alert('start');
-						//console.log( 'start: ', this );
-						//console.log( 'status: ', status );
 						pluginDiv.setAttribute("data-state","Started");
-						//$element.find('div').setAttribute("data-state","Started");
-						//this.setAttribute("data-state","Started");
 						window.clearTimeout(timeoutID);
 						if(selected==(layout.qListObject.qDataPages[0].qArea.qHeight-1)){
 							sendRestart();
@@ -370,7 +274,6 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 						
 						
 					}else if(this.getAttribute("value")=="stop"){
-						//alert('stop');
 						pluginDiv.setAttribute("data-state","Stopped");
 						window.clearTimeout(timeoutID);
 					}
@@ -382,29 +285,14 @@ define(["jquery", "text!./css.css"], function($, cssContent) {'use strict';
 			
 			
 			if( pluginDiv.getAttribute("data-state")=="Started" && !this.inEditState() && pluginDiv.getAttribute("data-timeout")!="Set"){
-				//console.log( 'timeout: ', layout.myproperties.timeout );
-				if(layout.myproperties.loop && selected==(layout.qListObject.qDataPages[0].qArea.qHeight-1)){
+				if(layout.config.loop && selected==(layout.qListObject.qDataPages[0].qArea.qHeight-1)){
 					pluginDiv.setAttribute("data-timeout","Set");
-					timeoutID = window.setTimeout(sendRestart, layout.myproperties.timeout);
+					timeoutID = window.setTimeout(sendRestart, layout.config.timeout);
 				}else{
 					pluginDiv.setAttribute("data-timeout","Set");
-					timeoutID = window.setTimeout(sendSelected, layout.myproperties.timeout);
+					timeoutID = window.setTimeout(sendSelected, layout.config.timeout);
 				}
 			}
-			
-
-			//alert(html);
-			/*if(this.selectionsEnabled && layout.selectionMode !== "NO") {
-				$element.find('li').on('qv-activate', function() {
-					if(this.hasAttribute("data-value")) {
-						var value = parseInt(this.getAttribute("data-value"), 10), dim = 0;
-						if(layout.selectionMode === "REPLACE") {
-							//console.log( 'select: ', value );
-							self.backendApi.selectValues(dim, [value], false);
-						}
-					}
-				});
-			}*/
 		}
 	};
 });

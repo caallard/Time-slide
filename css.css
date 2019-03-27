@@ -1,0 +1,24 @@
+/* CSS */
+div.qv-object-Time-slide {  
+	width:100%;
+	height:100%;
+}
+
+.qv-object-Time-slide button {
+  background-image:linear-gradient(rgb(255, 255, 255), rgb(230, 230, 230));
+  border-radius: 3px;
+  border: 1px solid rgb(179,179,179);
+  color: rgb(89,89,89);
+  margin: 0px;
+  text-align: center;
+  padding: 4px 10px 1px 10px;
+  margin: 0 8px 8px 0;
+}
+
+.qv-object-Time-slide button:active {
+  background-image:linear-gradient(rgb(89, 89, 89), rgb(86, 86, 86));
+}
+
+.qv-object-Time-slide .value{
+  font-size: 22px;
+}
