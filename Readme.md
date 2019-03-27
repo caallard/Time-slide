@@ -25,4 +25,4 @@ Add a dimension
 
 Configure the extension
 
-![Alt text](/img/img2.png?raw=true "Configure the extension")
+![Alt text](/img/img3.png?raw=true "Configure the extension")
